@@ -1,0 +1,340 @@
+{
+  "profile": {
+    "name": "Rafael",
+    "birthYear": 1969
+  },
+  "markers": [
+    {
+      "id": "glucose_fasting",
+      "name": "Glucosa en ayuno",
+      "unit": "mg/dL",
+      "direction_of_concern": "up"
+    },
+    {
+      "id": "hba1c",
+      "name": "Hemoglobina glicosilada (HbA1c)",
+      "unit": "%",
+      "direction_of_concern": "up"
+    },
+    {
+      "id": "chol_total",
+      "name": "Colesterol total",
+      "unit": "mg/dL",
+      "direction_of_concern": "up"
+    },
+    {
+      "id": "ldl",
+      "name": "Colesterol LDL",
+      "unit": "mg/dL",
+      "direction_of_concern": "up"
+    },
+    {
+      "id": "hdl",
+      "name": "Colesterol HDL",
+      "unit": "mg/dL",
+      "direction_of_concern": "down"
+    },
+    {
+      "id": "triglycerides",
+      "name": "Triglicéridos",
+      "unit": "mg/dL",
+      "direction_of_concern": "up"
+    },
+    {
+      "id": "creatinine",
+      "name": "Creatinina",
+      "unit": "mg/dL",
+      "direction_of_concern": "up"
+    },
+    {
+      "id": "alt",
+      "name": "ALT (TGP)",
+      "unit": "U/L",
+      "direction_of_concern": "up"
+    },
+    {
+      "id": "tsh",
+      "name": "TSH",
+      "unit": "mIU/L",
+      "direction_of_concern": "both"
+    },
+    {
+      "id": "vitamin_d",
+      "name": "Vitamina D (25-OH)",
+      "unit": "ng/mL",
+      "direction_of_concern": "down"
+    },
+    {
+      "id": "hemoglobin",
+      "name": "Hemoglobina",
+      "unit": "g/dL",
+      "direction_of_concern": "both"
+    }
+  ],
+  "measurements": [
+    {
+      "markerId": "glucose_fasting",
+      "value": 92,
+      "unit": "mg/dL",
+      "date": "2024-12-15"
+    },
+    {
+      "markerId": "hba1c",
+      "value": 5.4,
+      "unit": "%",
+      "date": "2024-12-15"
+    },
+    {
+      "markerId": "chol_total",
+      "value": 170,
+      "unit": "mg/dL",
+      "date": "2024-12-15"
+    },
+    {
+      "markerId": "ldl",
+      "value": 88,
+      "unit": "mg/dL",
+      "date": "2024-12-15"
+    },
+    {
+      "markerId": "hdl",
+      "value": 52,
+      "unit": "mg/dL",
+      "date": "2024-12-15"
+    },
+    {
+      "markerId": "triglycerides",
+      "value": 110,
+      "unit": "mg/dL",
+      "date": "2024-12-15"
+    },
+    {
+      "markerId": "creatinine",
+      "value": 0.9,
+      "unit": "mg/dL",
+      "date": "2024-12-15"
+    },
+    {
+      "markerId": "alt",
+      "value": 28,
+      "unit": "U/L",
+      "date": "2024-12-15"
+    },
+    {
+      "markerId": "tsh",
+      "value": 2.1,
+      "unit": "mIU/L",
+      "date": "2024-12-15"
+    },
+    {
+      "markerId": "vitamin_d",
+      "value": 42,
+      "unit": "ng/mL",
+      "date": "2024-12-15"
+    },
+    {
+      "markerId": "hemoglobin",
+      "value": 15.2,
+      "unit": "g/dL",
+      "date": "2024-12-15"
+    },
+    {
+      "markerId": "glucose_fasting",
+      "value": 98,
+      "unit": "mg/dL",
+      "date": "2025-06-20"
+    },
+    {
+      "markerId": "hba1c",
+      "value": 5.6,
+      "unit": "%",
+      "date": "2025-06-20"
+    },
+    {
+      "markerId": "chol_total",
+      "value": 175,
+      "unit": "mg/dL",
+      "date": "2025-06-20"
+    },
+    {
+      "markerId": "ldl",
+      "value": 90,
+      "unit": "mg/dL",
+      "date": "2025-06-20"
+    },
+    {
+      "markerId": "hdl",
+      "value": 50,
+      "unit": "mg/dL",
+      "date": "2025-06-20"
+    },
+    {
+      "markerId": "triglycerides",
+      "value": 115,
+      "unit": "mg/dL",
+      "date": "2025-06-20"
+    },
+    {
+      "markerId": "creatinine",
+      "value": 0.95,
+      "unit": "mg/dL",
+      "date": "2025-06-20"
+    },
+    {
+      "markerId": "alt",
+      "value": 30,
+      "unit": "U/L",
+      "date": "2025-06-20"
+    },
+    {
+      "markerId": "tsh",
+      "value": 2.3,
+      "unit": "mIU/L",
+      "date": "2025-06-20"
+    },
+    {
+      "markerId": "vitamin_d",
+      "value": 40,
+      "unit": "ng/mL",
+      "date": "2025-06-20"
+    },
+    {
+      "markerId": "hemoglobin",
+      "value": 15.0,
+      "unit": "g/dL",
+      "date": "2025-06-20"
+    },
+    {
+      "markerId": "glucose_fasting",
+      "value": 105,
+      "unit": "mg/dL",
+      "date": "2026-01-10"
+    },
+    {
+      "markerId": "hba1c",
+      "value": 5.9,
+      "unit": "%",
+      "date": "2026-01-10"
+    },
+    {
+      "markerId": "chol_total",
+      "value": 178,
+      "unit": "mg/dL",
+      "date": "2026-01-10"
+    },
+    {
+      "markerId": "ldl",
+      "value": 93,
+      "unit": "mg/dL",
+      "date": "2026-01-10"
+    },
+    {
+      "markerId": "hdl",
+      "value": 48,
+      "unit": "mg/dL",
+      "date": "2026-01-10"
+    },
+    {
+      "markerId": "triglycerides",
+      "value": 120,
+      "unit": "mg/dL",
+      "date": "2026-01-10"
+    },
+    {
+      "markerId": "creatinine",
+      "value": 1.0,
+      "unit": "mg/dL",
+      "date": "2026-01-10"
+    },
+    {
+      "markerId": "alt",
+      "value": 32,
+      "unit": "U/L",
+      "date": "2026-01-10"
+    },
+    {
+      "markerId": "tsh",
+      "value": 2.0,
+      "unit": "mIU/L",
+      "date": "2026-01-10"
+    },
+    {
+      "markerId": "vitamin_d",
+      "value": 38,
+      "unit": "ng/mL",
+      "date": "2026-01-10"
+    },
+    {
+      "markerId": "hemoglobin",
+      "value": 14.8,
+      "unit": "g/dL",
+      "date": "2026-01-10"
+    },
+    {
+      "markerId": "glucose_fasting",
+      "value": 118,
+      "unit": "mg/dL",
+      "date": "2026-06-30"
+    },
+    {
+      "markerId": "hba1c",
+      "value": 6.3,
+      "unit": "%",
+      "date": "2026-06-30"
+    },
+    {
+      "markerId": "chol_total",
+      "value": 182,
+      "unit": "mg/dL",
+      "date": "2026-06-30"
+    },
+    {
+      "markerId": "ldl",
+      "value": 96,
+      "unit": "mg/dL",
+      "date": "2026-06-30"
+    },
+    {
+      "markerId": "hdl",
+      "value": 47,
+      "unit": "mg/dL",
+      "date": "2026-06-30"
+    },
+    {
+      "markerId": "triglycerides",
+      "value": 125,
+      "unit": "mg/dL",
+      "date": "2026-06-30"
+    },
+    {
+      "markerId": "creatinine",
+      "value": 1.02,
+      "unit": "mg/dL",
+      "date": "2026-06-30"
+    },
+    {
+      "markerId": "alt",
+      "value": 35,
+      "unit": "U/L",
+      "date": "2026-06-30"
+    },
+    {
+      "markerId": "tsh",
+      "value": 2.2,
+      "unit": "mIU/L",
+      "date": "2026-06-30"
+    },
+    {
+      "markerId": "vitamin_d",
+      "value": 41,
+      "unit": "ng/mL",
+      "date": "2026-06-30"
+    },
+    {
+      "markerId": "hemoglobin",
+      "value": 15.1,
+      "unit": "g/dL",
+      "date": "2026-06-30"
+    }
+  ]
+}
