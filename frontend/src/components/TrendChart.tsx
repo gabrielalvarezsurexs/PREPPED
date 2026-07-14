@@ -4,6 +4,7 @@ import {
   CartesianGrid,
   Line,
   LineChart,
+  ReferenceArea,
   ReferenceLine,
   ResponsiveContainer,
   Tooltip,
@@ -29,16 +30,19 @@ interface DotProps {
 }
 
 function StatusDot(lastIndex: number) {
+  // Recharts calls this as a plain function per point; each returned element
+  // needs its own key or React warns about the dot list.
   return function Dot({ cx, cy, index, payload }: DotProps) {
-    if (cx == null || cy == null || !payload) return <g />;
+    if (cx == null || cy == null || !payload) return <g key={`dot-${index}`} />;
     const isLast = index === lastIndex;
     return (
       <circle
+        key={`dot-${index}`}
         cx={cx}
         cy={cy}
         r={isLast ? 6 : 4}
         fill={STATUS_COLOR[payload.status]}
-        stroke="#fff"
+        stroke="var(--surface)"
         strokeWidth={isLast ? 2 : 1}
       />
     );
@@ -66,9 +70,26 @@ export function TrendChart({ series }: { series: MarkerSeries }) {
           domain={["auto", "auto"]}
           width={44}
         />
+        {/* Curated in-range band — same numbers the engine classifies against */}
+        <ReferenceArea
+          y1={range.low}
+          y2={range.high}
+          fill="var(--green)"
+          fillOpacity={0.07}
+          stroke="none"
+        />
         <Tooltip
           formatter={(v: number) => [`${v} ${series.unit}`, markerName(series.markerId, lang)]}
-          labelStyle={{ color: "#0f172a" }}
+          contentStyle={{
+            background: "var(--surface)",
+            border: "1px solid var(--border)",
+            borderRadius: 8,
+            color: "var(--text)",
+            boxShadow: "var(--shadow)",
+          }}
+          labelStyle={{ color: "var(--text-muted)" }}
+          itemStyle={{ color: "var(--text)" }}
+          cursor={{ stroke: "var(--border)" }}
         />
         <ReferenceLine
           y={range.high}
@@ -77,12 +98,17 @@ export function TrendChart({ series }: { series: MarkerSeries }) {
           label={{ value: `${t.chart.maxPrefix}${range.high}`, fontSize: 11, fill: "var(--text-muted)", position: "insideTopRight" }}
         />
         {showLow && (
-          <ReferenceLine y={range.low} stroke="#94a3b8" strokeDasharray="4 4" />
+          <ReferenceLine
+            y={range.low}
+            stroke="#94a3b8"
+            strokeDasharray="4 4"
+            label={{ value: `${t.chart.minPrefix}${range.low}`, fontSize: 11, fill: "var(--text-muted)", position: "insideBottomRight" }}
+          />
         )}
         <Line
           type="monotone"
           dataKey="value"
-          stroke="#64748b"
+          stroke="var(--text-muted)"
           strokeWidth={2}
           dot={StatusDot(lastIndex)}
           activeDot={false}

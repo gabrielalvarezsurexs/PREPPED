@@ -10,11 +10,13 @@ export function Upload() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [fileName, setFileName] = useState<string | null>(null);
   const [result, setResult] = useState<UploadResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   async function handleFile(file: File) {
     setBusy(true);
+    setFileName(file.name);
     setError(null);
     setResult(null);
     try {
@@ -31,7 +33,17 @@ export function Upload() {
       <h2 className="section-title">{t.upload.title}</h2>
       <div
         className={`dropzone ${dragging ? "drag" : ""}`}
+        role="button"
+        tabIndex={0}
+        aria-label={t.upload.dragHere}
+        aria-busy={busy}
         onClick={() => inputRef.current?.click()}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            inputRef.current?.click();
+          }
+        }}
         onDragOver={(e) => {
           e.preventDefault();
           setDragging(true);
@@ -45,7 +57,11 @@ export function Upload() {
         }}
       >
         {busy ? (
-          <p>{t.upload.extracting}</p>
+          <p>
+            <span className="spinner" aria-hidden="true" />
+            {t.upload.extracting}
+            {fileName && <span className="muted"> ({fileName})</span>}
+          </p>
         ) : (
           <>
             <p style={{ fontSize: 16 }}>{t.upload.dragHere}</p>
@@ -65,14 +81,14 @@ export function Upload() {
       </div>
 
       {error && (
-        <div className="card result">
+        <div className="card result bad" role="alert">
           <p className="error">⚠️ {error}</p>
           <p className="muted">{t.upload.backendHint}</p>
         </div>
       )}
 
       {result && (
-        <div className="card result">
+        <div className="card result ok" role="status">
           <p>{result.message}</p>
           {!result.duplicate_file && (
             <ul className="muted">

@@ -79,7 +79,7 @@ No hay runner de tests en el frontend todavía; la verificación del cliente es 
 backend/app/
   api/          routes: upload (AT-3), history, marker, reminder, chat + common.py (deps compartidas)
   extraction/   LLM extracción: schema pydantic + prompt + cliente OpenAI
-  assistant/    LLM chat grounded: prompt + tools engine-backed + loop tool-calling (chat.py)
+  assistant/    LLM chat grounded: prompt (ES/EN) + tools engine-backed + loop tool-calling (chat.py)
   engine/       determinista: ranges, trends, flags, actions     (NUNCA llama al modelo)
   ingest.py     escritura idempotente (file_hash + dedup por profile/marker/date)
   models/       db.py (SQLModel/SQLite) + domain.py (tablas)
@@ -89,15 +89,25 @@ backend/tests/  test_at1/at2/at3 + test_assistant + test_boundary (conftest redi
 frontend/src/
   engine.ts     ESPEJO en cliente del engine (classify/trends/actions) para AT-1/AT-2 sin backend
   data/         catalog.ts (rangos curados, espejo) + seed.ts (data sintética Rafael)
-  views/        History, MarkerDetail, Upload, Assistant
-  components/    TrendChart, FlagBadge, ActionCard, Disclaimer
-  api/client.ts fetch al backend (upload + chat)
+  i18n/         selector de idioma ES/EN: strings.ts (diccionario tipado), LanguageContext.tsx
+                (provider + useLang, persiste en localStorage), markerNames.ts (nombres ES/EN)
+  views/        Splash, History, MarkerDetail, Upload, Assistant, Updates, About (con link al repo)
+  components/    TrendChart, FlagBadge, ActionCard, Disclaimer, LanguageToggle
+  api/client.ts fetch al backend (upload + chat con lang)
 synthetic/      datasets demo generados (JSON) + PDF demo
 ```
 
+**i18n (ES/EN)**: toda la copy de UI vive en `frontend/src/i18n/strings.ts` (`es` es la forma
+canónica; `Strings = typeof es` obliga a `en` a cubrir cada clave en compilación). `LanguageProvider`
+envuelve `App` en `main.tsx`; default español, elección recordada en `localStorage` y reflejada en
+`<html lang>`. El chat responde en el idioma elegido: `sendChat(messages, lang)` → `/api/chat`
+(`ChatRequest.lang`) → `run_chat(..., lang)` → `prompt_for(lang)` (`SYSTEM_PROMPT_ES/EN`, mismos
+guardrails). La app arranca en la **pantalla de inicio** (Splash) y entra al historial con un tap.
+
 **Doble fuente curada**: el frontend duplica catálogo + rangos (`frontend/src/data/catalog.ts`,
 `engine.ts`) para que AT-1/AT-2 no necesiten servidor. Si cambias marcadores o rangos en
-`backend/app/data/`, actualiza el espejo del frontend en el mismo commit.
+`backend/app/data/`, actualiza el espejo del frontend en el mismo commit. El **nombre display** de
+cada marcador (ES/EN) vive en `frontend/src/i18n/markerNames.ts`; si agregas un marcador, añádelo ahí.
 
 ## Data model
 

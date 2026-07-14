@@ -12,11 +12,24 @@ const es = {
     history: "Historial",
     upload: "Subir estudio",
     assistant: "Asistente",
+    updates: "Novedades",
     about: "Acerca de",
   },
 
   splash: {
     start: "Inicio",
+  },
+
+  updates: {
+    title: "Novedades",
+    intro: "Lo que viene para Prepped (hoja de ruta, sujeta a cambios):",
+    items: [
+      "Inicio de sesión y cuentas: pasar del prototipo de un solo perfil local a multiusuario con " +
+        "inicio de sesión.",
+      "Más marcadores: ampliar el catálogo más allá de los 11 actuales.",
+      "Nuevas funcionalidades generales: mejoras de experiencia y capacidades adicionales en toda " +
+        "la app.",
+    ],
   },
 
   disclaimer:
@@ -36,6 +49,7 @@ const es = {
     allMarkers: "Todos tus marcadores",
     studies: "estudios",
     noChange: "sin cambio",
+    refRange: "Rango: ",
   },
 
   markerDetail: {
@@ -53,6 +67,7 @@ const es = {
 
   chart: {
     maxPrefix: "máx ",
+    minPrefix: "mín ",
   },
 
   upload: {
@@ -86,6 +101,8 @@ const es = {
   },
 
   about: {
+    openSource: "Prepped es open-source.",
+    repoLabel: "Ver el repositorio en GitHub →",
     featuresTitle: "Funcionalidades",
     features: [
       "Sube estudios de laboratorio como foto o PDF. La app lee la imagen y extrae los valores " +
@@ -149,11 +166,22 @@ const en: Strings = {
     history: "History",
     upload: "Upload report",
     assistant: "Assistant",
+    updates: "Updates",
     about: "About",
   },
 
   splash: {
     start: "Start",
+  },
+
+  updates: {
+    title: "Updates",
+    intro: "What's coming for Prepped (roadmap, subject to change):",
+    items: [
+      "Login and accounts: move from the single local-profile prototype to multi-user with sign-in.",
+      "More markers: expand the catalog beyond the current 11.",
+      "New general features: experience improvements and additional capabilities across the app.",
+    ],
   },
 
   disclaimer:
@@ -173,6 +201,7 @@ const en: Strings = {
     allMarkers: "All your markers",
     studies: "reports",
     noChange: "no change",
+    refRange: "Range: ",
   },
 
   markerDetail: {
@@ -190,6 +219,7 @@ const en: Strings = {
 
   chart: {
     maxPrefix: "max ",
+    minPrefix: "min ",
   },
 
   upload: {
@@ -223,6 +253,8 @@ const en: Strings = {
   },
 
   about: {
+    openSource: "Prepped is open source.",
+    repoLabel: "View the repository on GitHub →",
     featuresTitle: "Features",
     features: [
       "Upload lab reports as a photo or PDF. The app reads the image and extracts the values " +

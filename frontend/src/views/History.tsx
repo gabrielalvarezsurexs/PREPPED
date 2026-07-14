@@ -2,6 +2,7 @@
 // markers surface first (worst-first). Clicking a marker opens its detail (AT-2).
 
 import { FlagBadge } from "../components/FlagBadge";
+import { CATALOG_BY_ID } from "../data/catalog";
 import { flaggedSeries } from "../engine";
 import { useLang } from "../i18n/LanguageContext";
 import { markerName } from "../i18n/markerNames";
@@ -11,6 +12,14 @@ import type { MarkerSeries } from "../types";
 interface Props {
   series: MarkerSeries[];
   onSelect: (markerId: string) => void;
+}
+
+/** Curated range as display text: bounded markers show low–high, one-sided ones ≤/≥. */
+function refRangeText(markerId: string): string {
+  const { range, directionOfConcern, unit } = CATALOG_BY_ID[markerId];
+  if (directionOfConcern === "up" && range.low === 0) return `≤ ${range.high} ${unit}`;
+  if (directionOfConcern === "down") return `≥ ${range.low} ${unit}`;
+  return `${range.low}–${range.high} ${unit}`;
 }
 
 function MarkerCard({
@@ -24,10 +33,17 @@ function MarkerCard({
   lang: Lang;
   t: Strings;
 }) {
-  const deltaClass = s.trendDirection === "up" ? "up" : s.trendDirection === "down" ? "down" : "";
+  // Color the delta by whether the move is toward or away from the direction of
+  // concern (an HDL drop is bad, an LDL drop is good). "both" stays neutral.
+  const dir = s.directionOfConcern;
+  const worse =
+    (dir === "up" && s.trendDirection === "up") || (dir === "down" && s.trendDirection === "down");
+  const better =
+    (dir === "up" && s.trendDirection === "down") || (dir === "down" && s.trendDirection === "up");
+  const deltaClass = worse ? "worse" : better ? "better" : "";
   const arrow = s.trendDirection === "up" ? "↑" : s.trendDirection === "down" ? "↓" : "→";
   return (
-    <button className="card marker-card" onClick={() => onSelect(s.markerId)}>
+    <button className={`card marker-card status-${s.latestStatus}`} onClick={() => onSelect(s.markerId)}>
       <div className="row">
         <span className="name">{markerName(s.markerId, lang)}</span>
         <FlagBadge status={s.latestStatus} />
@@ -40,6 +56,9 @@ function MarkerCard({
         <span className={`delta ${deltaClass}`}>
           {arrow} {s.delta !== 0 ? Math.abs(s.delta) : t.history.noChange}
         </span>
+      </div>
+      <div className="meta">
+        {t.history.refRange}{refRangeText(s.markerId)}
       </div>
     </button>
   );

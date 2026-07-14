@@ -2,7 +2,7 @@
 // data via the backend; gives light insights but never diagnoses. Needs the backend
 // running with an OPENAI_API_KEY (AT-1/AT-2 do not).
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { sendChat, type ChatTurn } from "../api/client";
 import { useLang } from "../i18n/LanguageContext";
 
@@ -13,6 +13,11 @@ export function Assistant() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
+
+  // Keep the latest turn in view: when the user sends, while thinking, and on reply.
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ block: "end" });
+  }, [messages, busy]);
 
   async function send(text: string) {
     const trimmed = text.trim();
@@ -29,7 +34,6 @@ export function Assistant() {
       setError(e instanceof Error ? e.message : t.assistant.error);
     } finally {
       setBusy(false);
-      requestAnimationFrame(() => endRef.current?.scrollIntoView({ behavior: "smooth" }));
     }
   }
 
@@ -57,7 +61,15 @@ export function Assistant() {
             {m.content}
           </div>
         ))}
-        {busy && <div className="bubble assistant muted">{t.assistant.thinking}</div>}
+        {busy && (
+          <div className="bubble assistant muted" aria-live="polite" aria-label={t.assistant.thinking}>
+            <span className="typing" aria-hidden="true">
+              <span className="t-dot" />
+              <span className="t-dot" />
+              <span className="t-dot" />
+            </span>
+          </div>
+        )}
         <div ref={endRef} />
       </div>
 

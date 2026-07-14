@@ -3,10 +3,19 @@
 
 import { useLang } from "../i18n/LanguageContext";
 
+const REPO_URL = "https://github.com/gabrielalvarezsurexs/PREPPED";
+
 export function About() {
   const { t } = useLang();
   return (
     <div className="about">
+      <div className="card about-repo">
+        <span>{t.about.openSource}</span>
+        <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
+          {t.about.repoLabel}
+        </a>
+      </div>
+
       <h2 className="section-title">{t.about.featuresTitle}</h2>
       <div className="card">
         <ul className="about-list">
