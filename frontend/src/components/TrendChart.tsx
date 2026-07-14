@@ -16,10 +16,11 @@ import { useLang } from "../i18n/LanguageContext";
 import { markerName } from "../i18n/markerNames";
 import type { MarkerSeries, Status } from "../types";
 
+// Theme variables so the dots track the palette in light and dark mode.
 const STATUS_COLOR: Record<Status, string> = {
-  red: "#dc2626",
-  amber: "#d97706",
-  in_range: "#16a34a",
+  red: "var(--red)",
+  amber: "var(--amber)",
+  in_range: "var(--green)",
 };
 
 interface DotProps {
@@ -93,14 +94,16 @@ export function TrendChart({ series }: { series: MarkerSeries }) {
         />
         <ReferenceLine
           y={range.high}
-          stroke="#94a3b8"
+          stroke="var(--text-muted)"
+          strokeOpacity={0.55}
           strokeDasharray="4 4"
           label={{ value: `${t.chart.maxPrefix}${range.high}`, fontSize: 11, fill: "var(--text-muted)", position: "insideTopRight" }}
         />
         {showLow && (
           <ReferenceLine
             y={range.low}
-            stroke="#94a3b8"
+            stroke="var(--text-muted)"
+            strokeOpacity={0.55}
             strokeDasharray="4 4"
             label={{ value: `${t.chart.minPrefix}${range.low}`, fontSize: 11, fill: "var(--text-muted)", position: "insideBottomRight" }}
           />
