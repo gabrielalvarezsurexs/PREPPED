@@ -79,6 +79,8 @@ export default function App() {
   }, [profileId, t.history.loadError]);
 
   // On login (or switching users), reset per-session state and load the history.
+  // Keyed on profileId only: a language switch recreates reloadHistory but must NOT
+  // reset the current view or wipe the chat/reminders.
   useEffect(() => {
     if (profileId == null) return;
     setView({ name: "history" });
@@ -86,7 +88,8 @@ export default function App() {
     setChatMessages([]);
     setPendingPrompt(null);
     void reloadHistory();
-  }, [profileId, reloadHistory]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profileId]);
 
   // Each view starts at the top — without this, deep scroll positions leak
   // between tabs (e.g. from the bottom of History into About).

@@ -46,13 +46,46 @@ const es = {
 
   updates: {
     title: "Novedades",
-    intro: "Lo que viene para Prepped (hoja de ruta, sujeta a cambios):",
-    items: [
-      "Inicio de sesión y cuentas: pasar del prototipo de un solo perfil local a multiusuario con " +
-        "inicio de sesión.",
+    changelogTitle: "Lo nuevo",
+    changelog: [
+      {
+        version: "v0.4 · Cuentas y multiusuario",
+        items: [
+          "Inicio de sesión y registro: cada usuario tiene su propio historial.",
+          "El historial ahora se sirve desde la base de datos (antes eran datos de demo fijos); " +
+            "lo que subes se refleja al instante.",
+          "Puedes borrar estudios que subiste por error.",
+          "Cuentas de prueba sembradas: test_user (con datos), Karla (menos datos) y Gabriel (vacío).",
+          "Botón para mostrar u ocultar la contraseña en el login.",
+        ],
+      },
+      {
+        version: "v0.3 · Asistente con memoria",
+        items: [
+          "Nuevo botón «insights adicionales» en cada marcador: pregunta al asistente con un tap.",
+          "El chat recuerda los mensajes recientes de la conversación y se conserva al cambiar de pestaña.",
+        ],
+      },
+      {
+        version: "v0.2 · Nueva identidad y bilingüe",
+        items: [
+          "Rediseño visual completo: tipografía con carácter, paleta cálida y acento propio.",
+          "Español e inglés con cambio al instante; recuerda tu elección.",
+          "Tema claro y oscuro que se adapta a tu sistema.",
+          "Gráfica mejorada: banda del rango de referencia y tooltip legible en modo oscuro.",
+          "Cada marcador muestra su rango de referencia y colorea la tendencia (mejor/peor).",
+        ],
+      },
+    ],
+    roadmapTitle: "Próximamente",
+    roadmapIntro: "Ideas en el horizonte (hoja de ruta, sujeta a cambios):",
+    roadmap: [
       "Más marcadores: ampliar el catálogo más allá de los 11 actuales.",
-      "Nuevas funcionalidades generales: mejoras de experiencia y capacidades adicionales en toda " +
-        "la app.",
+      "Recordatorios reales: exportarlos a tu calendario (.ics) y que persistan por cuenta.",
+      "Resumen imprimible para la consulta, con tus marcadores fuera de rango y las preguntas listas.",
+      "Seguridad real: contraseñas robustas, tokens de sesión y recuperación de cuenta.",
+      "Base de datos en la nube (Postgres) y despliegue, para usar Prepped desde cualquier dispositivo.",
+      "Rangos personalizados por edad y sexo, en vez de rangos generales de adulto.",
     ],
   },
 
@@ -149,28 +182,28 @@ const es = {
     repoLabel: "Ver el repositorio en GitHub →",
     featuresTitle: "Funcionalidades",
     features: [
-      "Sube estudios de laboratorio como foto o PDF. La app lee la imagen y extrae los valores " +
-        "automáticamente, sin escribir a mano.",
-      "Sin duplicados: re-subir el mismo archivo se detecta y se omite. Tampoco duplica cuando dos " +
-        "archivos traen la misma medición para la misma fecha.",
-      "Historial de cada marcador en el tiempo: reúne todos tus estudios y arma un historial por " +
+      "Cuentas con inicio de sesión y registro: cada usuario ve solo su propio historial. Vienen " +
+        "sembrados test_user (con datos), Karla (menos datos) y Gabriel (vacío), y puedes crear la tuya.",
+      "Sube estudios como foto o PDF: la app lee la imagen y extrae los valores automáticamente, sin " +
+        "escribir a mano.",
+      "Sin duplicados: re-subir el mismo archivo se detecta y se omite; tampoco duplica la misma " +
+        "medición para la misma fecha.",
+      "Borra estudios: si subiste un archivo por error o quieres probar, quitas el estudio y sus " +
+        "mediciones salen de tu historial.",
+      "Historial por marcador en el tiempo: reúne todos tus estudios en una línea de tiempo por " +
         "marcador (glucosa, colesterol, etc.).",
-      "Gráfica de tendencia: cada marcador tiene una gráfica de cómo cambió en el tiempo, con el " +
-        "último resultado resaltado.",
-      "Semáforo conservador: cada valor se marca verde (en rango), ámbar (acercándose al límite) o " +
-        "rojo (fuera de rango), comparado contra una tabla de referencia curada a mano.",
-      "Acción en un tap: cuando un marcador está fuera de rango, la app ofrece un siguiente paso ya " +
-        "armado (una pregunta para tu doctor, o un recordatorio) — sin escribir.",
-      "Recordatorios: puedes crear un recordatorio para un marcador; crearlo dos veces no genera " +
-        "duplicados.",
-      "Chat sobre tus datos: puedes preguntarle a un asistente, pero solo responde con base en tus " +
-        "propios resultados ya calculados. Da contexto general y observaciones ligeras, no diagnósticos.",
+      "Gráfica de tendencia: cómo cambió cada marcador, con el último resultado resaltado y la banda " +
+        "del rango de referencia.",
+      "Semáforo conservador: cada valor se marca verde (en rango), ámbar (cerca del límite) o rojo " +
+        "(fuera de rango), contra una tabla de referencia curada a mano.",
+      "Acción en un tap: cuando un marcador está fuera de rango, la app arma el siguiente paso (una " +
+        "pregunta para tu doctor y un recordatorio), sin escribir.",
+      "Chat sobre tus datos: pregúntale al asistente o pide «insights adicionales» desde un marcador. " +
+        "Solo responde con base en tus resultados ya calculados: contexto general, no diagnósticos.",
+      "Bilingüe y con tema claro/oscuro: cambia entre español e inglés al instante (recuerda tu " +
+        "elección) y se adapta al modo claro u oscuro de tu sistema.",
       "Disclaimer siempre visible: cada pantalla deja claro que esto no es un diagnóstico ni un " +
         "consejo médico.",
-      "Cuentas con inicio de sesión: cada usuario ve solo su propio historial. Vienen sembrados " +
-        "test_user (datos completos), Karla (menos datos) y Gabriel (vacío); también puedes registrarte.",
-      "Puedes borrar estudios: si subiste un archivo por error o quieres probar, quitas el estudio y " +
-        "sus mediciones salen de tu historial.",
       "11 marcadores soportados: glucosa en ayuno, HbA1c, colesterol total, LDL, HDL, triglicéridos, " +
         "creatinina, ALT, TSH, vitamina D y hemoglobina.",
     ],
@@ -197,8 +230,9 @@ const es = {
         "como «no reconocida»).",
       "Es una página web responsive, no una app nativa. «Tap» = clic/tap en el navegador.",
       "Los datos de demo (test_user) son 100% ficticios. Existen para pruebas, no son un paciente real.",
-      "El frontend y el backend duplican a propósito la tabla de rangos de referencia para que la " +
-        "demo corra sin servidor. Si cambias los rangos de un lado, debes actualizar el otro.",
+      "El frontend mantiene un espejo del catálogo y los rangos de referencia (para dibujar la " +
+        "gráfica y armar las acciones). Si cambias los rangos en el backend, actualiza el espejo del " +
+        "frontend en el mismo commit.",
     ],
   },
 };
@@ -247,11 +281,46 @@ const en: Strings = {
 
   updates: {
     title: "Updates",
-    intro: "What's coming for Prepped (roadmap, subject to change):",
-    items: [
-      "Login and accounts: move from the single local-profile prototype to multi-user with sign-in.",
+    changelogTitle: "What's new",
+    changelog: [
+      {
+        version: "v0.4 · Accounts & multi-user",
+        items: [
+          "Sign-in and registration: each user has their own history.",
+          "History now comes from the database (it used to be fixed demo data); what you upload " +
+            "shows up instantly.",
+          "You can delete studies you uploaded by mistake.",
+          "Seeded test accounts: test_user (with data), Karla (less data), and Gabriel (empty).",
+          "Show/hide password button on the login screen.",
+        ],
+      },
+      {
+        version: "v0.3 · Assistant with memory",
+        items: [
+          "New \"additional insights\" button on each marker: ask the assistant in one tap.",
+          "The chat remembers recent messages in the conversation and persists when you switch tabs.",
+        ],
+      },
+      {
+        version: "v0.2 · New identity & bilingual",
+        items: [
+          "Full visual redesign: characterful typography, a warm palette, and its own accent.",
+          "Spanish and English with instant switching; it remembers your choice.",
+          "Light and dark theme that adapts to your system.",
+          "Improved chart: reference-range band and a tooltip that's legible in dark mode.",
+          "Each marker shows its reference range and colors the trend (better/worse).",
+        ],
+      },
+    ],
+    roadmapTitle: "Coming soon",
+    roadmapIntro: "Ideas on the horizon (roadmap, subject to change):",
+    roadmap: [
       "More markers: expand the catalog beyond the current 11.",
-      "New general features: experience improvements and additional capabilities across the app.",
+      "Real reminders: export them to your calendar (.ics) and persist them per account.",
+      "Printable visit summary with your out-of-range markers and the ready-made questions.",
+      "Real security: robust passwords, session tokens, and account recovery.",
+      "Cloud database (Postgres) and deployment, to use Prepped from any device.",
+      "Ranges personalized by age and sex, instead of general adult ranges.",
     ],
   },
 
@@ -346,27 +415,27 @@ const en: Strings = {
     repoLabel: "View the repository on GitHub →",
     featuresTitle: "Features",
     features: [
-      "Upload lab reports as a photo or PDF. The app reads the image and extracts the values " +
+      "Accounts with sign-in and registration: each user sees only their own history. Seeded accounts " +
+        "are test_user (with data), Karla (less data), and Gabriel (empty), and you can create your own.",
+      "Upload reports as a photo or PDF: the app reads the image and extracts the values " +
         "automatically, with no manual typing.",
-      "No duplicates: re-uploading the same file is detected and skipped. It also won't duplicate " +
-        "when two files carry the same measurement for the same date.",
-      "Marker history over time: it pulls together all your reports and builds a history for each " +
-        "marker (glucose, cholesterol, etc.).",
-      "Trend chart: each marker gets a chart of how it changed over time, with the latest result " +
-        "highlighted.",
-      "Conservative traffic light: every value is flagged green (in range), amber (approaching the " +
-        "limit), or red (out of range), compared against a hand-curated reference table.",
-      "One-tap action: when a marker is out of range, the app offers a pre-armed next step (a " +
-        "question to bring to your doctor, or a reminder) — no writing required.",
-      "Reminders: you can create a reminder for a marker; creating it twice does not produce " +
-        "duplicates.",
-      "Chat over your data: you can ask an assistant, but it only answers based on your own " +
-        "already-computed results. It gives general context and light observations, not diagnoses.",
+      "No duplicates: re-uploading the same file is detected and skipped; it also won't duplicate the " +
+        "same measurement for the same date.",
+      "Delete studies: if you uploaded a file by mistake or want to test, remove the study and its " +
+        "measurements leave your history.",
+      "Marker history over time: it pulls all your reports into a per-marker timeline (glucose, " +
+        "cholesterol, etc.).",
+      "Trend chart: how each marker changed over time, with the latest result highlighted and the " +
+        "reference-range band shown.",
+      "Conservative traffic light: every value is flagged green (in range), amber (near the limit), " +
+        "or red (out of range), against a hand-curated reference table.",
+      "One-tap action: when a marker is out of range, the app assembles the next step (a question for " +
+        "your doctor and a reminder) — no writing required.",
+      "Chat over your data: ask the assistant, or request \"additional insights\" from a marker. It " +
+        "only answers from your already-computed results: general context, not diagnoses.",
+      "Bilingual with light/dark theme: switch between Spanish and English instantly (it remembers " +
+        "your choice) and it adapts to your system's light or dark mode.",
       "Always-visible disclaimer: every screen makes clear this is not a diagnosis or medical advice.",
-      "Accounts with sign-in: each user sees only their own history. Seeded accounts are test_user " +
-        "(full data), Karla (less data), and Gabriel (empty); you can also register your own.",
-      "You can delete studies: if you uploaded a file by mistake or want to test, remove the study " +
-        "and its measurements leave your history.",
       "11 supported markers: fasting glucose, HbA1c, total cholesterol, LDL, HDL, triglycerides, " +
         "creatinine, ALT, TSH, vitamin D, and hemoglobin.",
     ],
@@ -393,8 +462,9 @@ const en: Strings = {
         "as \"unrecognized\").",
       "It's a responsive web page, not a native app. \"Tap\" = click/tap in the browser.",
       "The demo data (test_user) is 100% fake. It exists for testing, not a real patient.",
-      "Frontend and backend intentionally duplicate the reference-range table so the demo can run " +
-        "without a server. If you change ranges on one side, you must update the other.",
+      "The frontend keeps a mirror of the catalog and reference ranges (to draw the chart and " +
+        "assemble the actions). If you change ranges in the backend, update the frontend mirror in " +
+        "the same commit.",
     ],
   },
 };
