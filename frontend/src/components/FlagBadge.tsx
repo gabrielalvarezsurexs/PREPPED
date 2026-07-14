@@ -1,16 +1,12 @@
+import { useLang } from "../i18n/LanguageContext";
 import type { Status } from "../types";
 
-const LABEL: Record<Status, string> = {
-  red: "Fuera de rango",
-  amber: "Cerca del límite",
-  in_range: "En rango",
-};
-
 export function FlagBadge({ status }: { status: Status }) {
+  const { t } = useLang();
   return (
     <span className={`pill ${status}`}>
       <span className="dot" />
-      {LABEL[status]}
+      {t.flag[status]}
     </span>
   );
 }

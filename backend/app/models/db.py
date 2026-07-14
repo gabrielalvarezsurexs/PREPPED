@@ -8,12 +8,15 @@ from sqlmodel import Session, SQLModel, create_engine
 
 from app.config import settings
 
+# Anchored so the DB is the same file no matter the process cwd (see config.py).
+_database_url = settings.resolved_database_url
+
 # ``check_same_thread`` is a SQLite-only knob; harmless to pass for the prototype.
 _connect_args = (
-    {"check_same_thread": False} if settings.database_url.startswith("sqlite") else {}
+    {"check_same_thread": False} if _database_url.startswith("sqlite") else {}
 )
 
-engine = create_engine(settings.database_url, echo=False, connect_args=_connect_args)
+engine = create_engine(_database_url, echo=False, connect_args=_connect_args)
 
 
 def init_db() -> None:

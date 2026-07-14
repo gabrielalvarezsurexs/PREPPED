@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 from typing import Any, Protocol
 
-from app.assistant.prompt import SYSTEM_PROMPT
+from app.assistant.prompt import prompt_for
 from app.assistant.tools import TOOL_SPECS, GroundedData
 from app.config import settings
 
@@ -50,6 +50,7 @@ def _normalize_tool_calls(tool_calls: Any) -> list[dict[str, Any]]:
 def run_chat(
     messages: list[dict[str, str]],
     data: GroundedData,
+    lang: str = "es",
     client: Any | None = None,
     model: str | None = None,
 ) -> str:
@@ -57,7 +58,7 @@ def run_chat(
     client = client or _build_client()
     model = model or settings.openai_model
 
-    convo: list[dict[str, Any]] = [{"role": "system", "content": SYSTEM_PROMPT}]
+    convo: list[dict[str, Any]] = [{"role": "system", "content": prompt_for(lang)}]
     convo.extend({"role": m["role"], "content": m["content"]} for m in messages)
 
     for _ in range(MAX_TOOL_ROUNDS):

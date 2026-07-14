@@ -1,5 +1,6 @@
 // AT-2: a flagged marker's ready next step, in one tap — nothing to type.
 
+import { useLang } from "../i18n/LanguageContext";
 import type { PreArmedAction } from "../types";
 
 interface Props {
@@ -9,11 +10,12 @@ interface Props {
 }
 
 export function ActionCard({ action, reminderSet, onSetReminder }: Props) {
+  const { t } = useLang();
   return (
     <div className="card action">
       <p>{action.plainLanguage}</p>
 
-      <h3>Pregunta lista para tu doctor</h3>
+      <h3>{t.action.doctorQuestionHeading}</h3>
       <blockquote className="quote">“{action.doctorQuestion}”</blockquote>
 
       <button
@@ -21,7 +23,7 @@ export function ActionCard({ action, reminderSet, onSetReminder }: Props) {
         onClick={onSetReminder}
         disabled={reminderSet}
       >
-        {reminderSet ? "✓ Recordatorio puesto" : action.reminderLabel}
+        {reminderSet ? t.action.reminderDone : action.reminderLabel}
       </button>
     </div>
   );

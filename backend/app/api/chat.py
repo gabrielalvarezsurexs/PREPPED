@@ -16,6 +16,7 @@ router = APIRouter(prefix="/api", tags=["assistant"])
 
 MAX_MESSAGES = 40
 ALLOWED_ROLES = {"user", "assistant"}
+ALLOWED_LANGS = {"es", "en"}
 
 
 class ChatTurn(BaseModel):
@@ -25,6 +26,7 @@ class ChatTurn(BaseModel):
 
 class ChatRequest(BaseModel):
     messages: list[ChatTurn] = Field(default_factory=list)
+    lang: str = "es"
 
 
 class ChatResponse(BaseModel):
@@ -42,12 +44,14 @@ def chat(payload: ChatRequest, session: Session = Depends(get_session)) -> ChatR
         if turn.role not in ALLOWED_ROLES:
             raise HTTPException(status_code=400, detail=f"Invalid role: {turn.role}")
 
+    lang = payload.lang if payload.lang in ALLOWED_LANGS else "es"
+
     profile = get_default_profile(session)
     measurements = load_measurements(session, profile.id)
     data = GroundedData(build_series(measurements))
 
     try:
-        reply = run_chat([t.model_dump() for t in payload.messages], data)
+        reply = run_chat([t.model_dump() for t in payload.messages], data, lang=lang)
     except ChatError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
 

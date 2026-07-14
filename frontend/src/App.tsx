@@ -1,20 +1,38 @@
 import { useMemo, useState } from "react";
 import { Disclaimer } from "./components/Disclaimer";
+import { LanguageToggle } from "./components/LanguageToggle";
 import { SEED_MEASUREMENTS, PROFILE } from "./data/seed";
 import { buildSeries } from "./engine";
+import { useLang } from "./i18n/LanguageContext";
+import type { Strings } from "./i18n/strings";
+import { About } from "./views/About";
 import { Assistant } from "./views/Assistant";
 import { History } from "./views/History";
 import { MarkerDetail } from "./views/MarkerDetail";
+import { Splash } from "./views/Splash";
 import { Upload } from "./views/Upload";
 
 type View =
+  | { name: "splash" }
   | { name: "history" }
   | { name: "marker"; markerId: string }
   | { name: "upload" }
-  | { name: "assistant" };
+  | { name: "assistant" }
+  | { name: "about" };
+
+// Tabs, in order. `marker` is intentionally absent — it's reached from History and
+// keeps the History tab highlighted.
+type TabName = "history" | "upload" | "assistant" | "about";
+const TABS: { name: TabName; labelKey: keyof Strings["nav"] }[] = [
+  { name: "history", labelKey: "history" },
+  { name: "upload", labelKey: "upload" },
+  { name: "assistant", labelKey: "assistant" },
+  { name: "about", labelKey: "about" },
+];
 
 export default function App() {
-  const [view, setView] = useState<View>({ name: "history" });
+  const { t } = useLang();
+  const [view, setView] = useState<View>({ name: "splash" });
   // AT-2 "flips local state": which markers have a reminder set.
   const [reminders, setReminders] = useState<Set<string>>(new Set());
 
@@ -27,57 +45,65 @@ export default function App() {
     setReminders((prev) => new Set(prev).add(markerId));
   }
 
+  if (view.name === "splash") {
+    return <Splash onStart={() => setView({ name: "history" })} />;
+  }
+
+  function isActive(tab: TabName): boolean {
+    if (tab === "history") return view.name === "history" || view.name === "marker";
+    return view.name === tab;
+  }
+
   return (
     <div className="app">
       <header className="header">
-        <div className="brand">
+        <button className="brand" onClick={() => setView({ name: "splash" })}>
           Prep<span>ped</span>
+        </button>
+        <div className="header-right">
+          <nav className="nav">
+            {TABS.map((tab) => (
+              <button
+                key={tab.name}
+                className={isActive(tab.name) ? "active" : ""}
+                onClick={() => setView({ name: tab.name } as View)}
+              >
+                {t.nav[tab.labelKey]}
+              </button>
+            ))}
+          </nav>
+          <LanguageToggle />
         </div>
-        <nav className="nav">
-          <button
-            className={view.name === "history" || view.name === "marker" ? "active" : ""}
-            onClick={() => setView({ name: "history" })}
-          >
-            Historial
-          </button>
-          <button
-            className={view.name === "upload" ? "active" : ""}
-            onClick={() => setView({ name: "upload" })}
-          >
-            Subir estudio
-          </button>
-          <button
-            className={view.name === "assistant" ? "active" : ""}
-            onClick={() => setView({ name: "assistant" })}
-          >
-            Asistente
-          </button>
-        </nav>
       </header>
 
       <Disclaimer />
 
-      {view.name === "history" && (
-        <>
-          <p className="muted" style={{ marginTop: -8 }}>
-            Historial de <strong>{PROFILE.name}</strong>
-          </p>
-          <History series={series} onSelect={(id) => setView({ name: "marker", markerId: id })} />
-        </>
-      )}
+      <div className="view-enter" key={view.name}>
+        {view.name === "history" && (
+          <>
+            <p className="muted" style={{ marginTop: -8 }}>
+              {t.history.historyOfPrefix}
+              <strong>{PROFILE.name}</strong>
+            </p>
+            <History series={series} onSelect={(id) => setView({ name: "marker", markerId: id })} />
+          </>
+        )}
 
-      {view.name === "marker" && selected && (
-        <MarkerDetail
-          series={selected}
-          reminderSet={reminders.has(selected.markerId)}
-          onSetReminder={() => setReminder(selected.markerId)}
-          onBack={() => setView({ name: "history" })}
-        />
-      )}
+        {view.name === "marker" && selected && (
+          <MarkerDetail
+            series={selected}
+            reminderSet={reminders.has(selected.markerId)}
+            onSetReminder={() => setReminder(selected.markerId)}
+            onBack={() => setView({ name: "history" })}
+          />
+        )}
 
-      {view.name === "upload" && <Upload />}
+        {view.name === "upload" && <Upload />}
 
-      {view.name === "assistant" && <Assistant />}
+        {view.name === "assistant" && <Assistant />}
+
+        {view.name === "about" && <About />}
+      </div>
     </div>
   );
 }

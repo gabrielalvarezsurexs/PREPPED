@@ -1,14 +1,12 @@
 // Visible on every screen (guardrail): the absence of a flag is never "all good".
 
-export const DISCLAIMER_TEXT =
-  "Prepped no es una herramienta de diagnóstico ni un asesor médico. No indica " +
-  "enfermedades, tratamientos, dosis ni dieta. La ausencia de una alerta no significa " +
-  "que todo esté bien. Consulta siempre a un profesional de salud.";
+import { useLang } from "../i18n/LanguageContext";
 
 export function Disclaimer() {
+  const { t } = useLang();
   return (
     <p className="disclaimer" role="note">
-      ⚕️ {DISCLAIMER_TEXT}
+      ⚕️ {t.disclaimer}
     </p>
   );
 }

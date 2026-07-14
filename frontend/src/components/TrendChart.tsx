@@ -11,6 +11,8 @@ import {
   YAxis,
 } from "recharts";
 import { CATALOG_BY_ID } from "../data/catalog";
+import { useLang } from "../i18n/LanguageContext";
+import { markerName } from "../i18n/markerNames";
 import type { MarkerSeries, Status } from "../types";
 
 const STATUS_COLOR: Record<Status, string> = {
@@ -44,6 +46,7 @@ function StatusDot(lastIndex: number) {
 }
 
 export function TrendChart({ series }: { series: MarkerSeries }) {
+  const { lang, t } = useLang();
   const { range } = CATALOG_BY_ID[series.markerId];
   const data = series.points.map((p) => ({
     date: p.date.slice(0, 7), // yyyy-mm
@@ -64,14 +67,14 @@ export function TrendChart({ series }: { series: MarkerSeries }) {
           width={44}
         />
         <Tooltip
-          formatter={(v: number) => [`${v} ${series.unit}`, series.name]}
+          formatter={(v: number) => [`${v} ${series.unit}`, markerName(series.markerId, lang)]}
           labelStyle={{ color: "#0f172a" }}
         />
         <ReferenceLine
           y={range.high}
           stroke="#94a3b8"
           strokeDasharray="4 4"
-          label={{ value: `máx ${range.high}`, fontSize: 11, fill: "var(--text-muted)", position: "insideTopRight" }}
+          label={{ value: `${t.chart.maxPrefix}${range.high}`, fontSize: 11, fill: "var(--text-muted)", position: "insideTopRight" }}
         />
         {showLow && (
           <ReferenceLine y={range.low} stroke="#94a3b8" strokeDasharray="4 4" />

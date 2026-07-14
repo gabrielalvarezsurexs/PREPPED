@@ -5,6 +5,8 @@
 // conservative traffic light). No model involved, ever.
 
 import { CATALOG, CATALOG_BY_ID } from "./data/catalog";
+import { markerName } from "./i18n/markerNames";
+import type { Lang } from "./i18n/strings";
 import type {
   Measurement,
   MarkerSeries,
@@ -89,10 +91,45 @@ export function flaggedSeries(series: MarkerSeries[]): MarkerSeries[] {
     .sort((a, b) => SEVERITY[b.latestStatus] - SEVERITY[a.latestStatus]);
 }
 
-/** Pre-armed action copy — curated, deterministic. Mirrors `engine/actions.py`. */
-export function actionFor(series: MarkerSeries): PreArmedAction | null {
+/**
+ * Pre-armed action copy — curated, deterministic. Mirrors `engine/actions.py`.
+ * The classification/trend are already computed; this only verbalizes them in the
+ * chosen language (default Spanish, keeping the original behavior).
+ */
+export function actionFor(series: MarkerSeries, lang: Lang = "es"): PreArmedAction | null {
   if (!series.flagged) return null;
   const entry = CATALOG_BY_ID[series.markerId];
+  const name = markerName(series.markerId, lang);
+  const v = formatValue(series.latestValue);
+
+  if (lang === "en") {
+    const where =
+      series.latestStatus === "red"
+        ? entry.directionOfConcern === "up"
+          ? "is above the reference range"
+          : entry.directionOfConcern === "down"
+            ? "is below the reference range"
+            : "is outside the reference range"
+        : "is within range but approaching the limit";
+    const trendNote =
+      series.trendDirection === "up"
+        ? " and has been rising across your recent reports"
+        : series.trendDirection === "down"
+          ? " and has been falling across your recent reports"
+          : "";
+    return {
+      markerId: series.markerId,
+      status: series.latestStatus,
+      plainLanguage:
+        `Your latest ${name} (${v} ${entry.unit}) ${where}${trendNote}. ` +
+        "This is something to review with a health professional. " +
+        "Prepped does not diagnose or prescribe treatment.",
+      doctorQuestion:
+        `My ${name} came back at ${v} ${entry.unit}. ` +
+        "What does it mean in my case and how should I follow up on it?",
+      reminderLabel: "Set a reminder to schedule a check-up",
+    };
+  }
 
   const where =
     series.latestStatus === "red"
@@ -110,16 +147,15 @@ export function actionFor(series: MarkerSeries): PreArmedAction | null {
         ? " y ha ido bajando en tus últimos estudios"
         : "";
 
-  const v = formatValue(series.latestValue);
   return {
     markerId: series.markerId,
     status: series.latestStatus,
     plainLanguage:
-      `Tu ${entry.name} más reciente (${v} ${entry.unit}) ${where}${trendNote}. ` +
+      `Tu ${name} más reciente (${v} ${entry.unit}) ${where}${trendNote}. ` +
       "Esto es algo para revisar con un profesional de salud. " +
       "Prepped no diagnostica ni indica tratamiento.",
     doctorQuestion:
-      `Mi ${entry.name} salió en ${v} ${entry.unit}. ` +
+      `Mi ${name} salió en ${v} ${entry.unit}. ` +
       "¿Qué significa en mi caso y cómo debería darle seguimiento?",
     reminderLabel: "Poner recordatorio para agendar un chequeo",
   };

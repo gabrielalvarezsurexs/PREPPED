@@ -4,14 +4,10 @@
 
 import { useRef, useState } from "react";
 import { sendChat, type ChatTurn } from "../api/client";
-
-const SUGGESTIONS = [
-  "¿Qué marcadores debería revisar primero?",
-  "¿Qué significa que mi glucosa venga subiendo?",
-  "¿Qué le puedo preguntar a mi doctor?",
-];
+import { useLang } from "../i18n/LanguageContext";
 
 export function Assistant() {
+  const { lang, t } = useLang();
   const [messages, setMessages] = useState<ChatTurn[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -27,10 +23,10 @@ export function Assistant() {
     setBusy(true);
     setError(null);
     try {
-      const { reply } = await sendChat(next);
+      const { reply } = await sendChat(next, lang);
       setMessages([...next, { role: "assistant", content: reply }]);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "No se pudo contactar al asistente.");
+      setError(e instanceof Error ? e.message : t.assistant.error);
     } finally {
       setBusy(false);
       requestAnimationFrame(() => endRef.current?.scrollIntoView({ behavior: "smooth" }));
@@ -39,16 +35,16 @@ export function Assistant() {
 
   return (
     <div>
-      <h2 className="section-title">Asistente</h2>
+      <h2 className="section-title">{t.assistant.title}</h2>
       <p className="muted" style={{ marginTop: -6 }}>
-        Responde solo desde tus datos ya calculados. Da orientación general, no diagnostica.
+        {t.assistant.subtitle}
       </p>
 
       <div className="card chat">
         {messages.length === 0 && (
           <div className="chat-empty">
-            <p className="muted">Pregúntame sobre tus resultados. Por ejemplo:</p>
-            {SUGGESTIONS.map((s) => (
+            <p className="muted">{t.assistant.askExample}</p>
+            {t.assistant.suggestions.map((s) => (
               <button key={s} className="chip" onClick={() => void send(s)}>
                 {s}
               </button>
@@ -61,13 +57,13 @@ export function Assistant() {
             {m.content}
           </div>
         ))}
-        {busy && <div className="bubble assistant muted">Pensando…</div>}
+        {busy && <div className="bubble assistant muted">{t.assistant.thinking}</div>}
         <div ref={endRef} />
       </div>
 
       {error && (
         <p className="error" style={{ marginTop: 10 }}>
-          ⚠️ {error} — el asistente necesita el backend corriendo y una OPENAI_API_KEY.
+          ⚠️ {error} — {t.assistant.errorHint}
         </p>
       )}
 
@@ -81,11 +77,11 @@ export function Assistant() {
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Escribe tu pregunta…"
+          placeholder={t.assistant.placeholder}
           disabled={busy}
         />
         <button className="btn" type="submit" disabled={busy || !input.trim()}>
-          Enviar
+          {t.assistant.send}
         </button>
       </form>
     </div>

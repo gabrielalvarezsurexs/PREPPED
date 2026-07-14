@@ -4,6 +4,8 @@ import { ActionCard } from "../components/ActionCard";
 import { FlagBadge } from "../components/FlagBadge";
 import { TrendChart } from "../components/TrendChart";
 import { actionFor } from "../engine";
+import { useLang } from "../i18n/LanguageContext";
+import { markerName } from "../i18n/markerNames";
 import type { MarkerSeries } from "../types";
 
 interface Props {
@@ -14,18 +16,19 @@ interface Props {
 }
 
 export function MarkerDetail({ series, reminderSet, onSetReminder, onBack }: Props) {
-  const action = actionFor(series);
+  const { lang, t } = useLang();
+  const action = actionFor(series, lang);
 
   return (
     <div>
-      <button className="back" onClick={onBack}>← Volver al historial</button>
+      <button className="back" onClick={onBack}>{t.markerDetail.back}</button>
 
       <div className="card">
         <div className="row" style={{ marginBottom: 12 }}>
           <div>
-            <div style={{ fontSize: 20, fontWeight: 700 }}>{series.name}</div>
+            <div style={{ fontSize: 20, fontWeight: 700 }}>{markerName(series.markerId, lang)}</div>
             <div className="muted">
-              Último: {series.latestValue} {series.unit}
+              {t.markerDetail.latestPrefix}{series.latestValue} {series.unit}
             </div>
           </div>
           <FlagBadge status={series.latestStatus} />
@@ -37,8 +40,7 @@ export function MarkerDetail({ series, reminderSet, onSetReminder, onBack }: Pro
         <ActionCard action={action} reminderSet={reminderSet} onSetReminder={onSetReminder} />
       ) : (
         <p className="muted" style={{ marginTop: 16 }}>
-          Este marcador está en rango. Recuerda que eso no sustituye la valoración de un
-          profesional de salud.
+          {t.markerDetail.inRangeNote}
         </p>
       )}
     </div>

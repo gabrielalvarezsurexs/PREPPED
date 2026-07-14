@@ -9,7 +9,7 @@ from types import SimpleNamespace
 
 import app.api.chat as chat_module
 from app.assistant.chat import run_chat
-from app.assistant.prompt import SYSTEM_PROMPT
+from app.assistant.prompt import SYSTEM_PROMPT, SYSTEM_PROMPT_EN, prompt_for
 from app.assistant.tools import GroundedData
 from app.engine.trends import MeasurementInput, build_series
 from tests.conftest import add_measurement, seed_catalog, seed_profile
@@ -94,6 +94,17 @@ def test_system_prompt_keeps_hard_guardrails():
     assert "profesional de salud" in prompt
 
 
+def test_english_prompt_keeps_hard_guardrails():
+    assert prompt_for("en") is SYSTEM_PROMPT_EN
+    prompt = SYSTEM_PROMPT_EN.lower()
+    assert "do not diagnose" in prompt
+    assert "never invent" in prompt
+    assert "dosing" in prompt
+    assert "health professional" in prompt
+    # Unknown languages fall back to Spanish.
+    assert prompt_for("fr") is SYSTEM_PROMPT
+
+
 # --- route wiring ----------------------------------------------------------
 
 def test_chat_route_returns_reply_and_disclaimer(client, session, monkeypatch):
@@ -101,13 +112,36 @@ def test_chat_route_returns_reply_and_disclaimer(client, session, monkeypatch):
     profile = seed_profile(session)
     add_measurement(session, profile.id, "glucose_fasting", 118, date(2026, 6, 30))
 
-    monkeypatch.setattr(chat_module, "run_chat", lambda messages, data: "Respuesta de prueba.")
+    monkeypatch.setattr(
+        chat_module, "run_chat", lambda messages, data, lang="es": "Respuesta de prueba."
+    )
 
     resp = client.post("/api/chat", json={"messages": [{"role": "user", "content": "hola"}]})
     assert resp.status_code == 200
     body = resp.json()
     assert body["reply"] == "Respuesta de prueba."
     assert "profesional de salud" in body["disclaimer"].lower()
+
+
+def test_chat_route_passes_selected_language(client, session, monkeypatch):
+    seed_catalog(session)
+    profile = seed_profile(session)
+    add_measurement(session, profile.id, "glucose_fasting", 118, date(2026, 6, 30))
+
+    seen: dict = {}
+
+    def _fake(messages, data, lang="es"):
+        seen["lang"] = lang
+        return "Test reply."
+
+    monkeypatch.setattr(chat_module, "run_chat", _fake)
+
+    resp = client.post(
+        "/api/chat",
+        json={"messages": [{"role": "user", "content": "hi"}], "lang": "en"},
+    )
+    assert resp.status_code == 200
+    assert seen["lang"] == "en"
 
 
 def test_chat_route_rejects_empty_conversation(client, session):

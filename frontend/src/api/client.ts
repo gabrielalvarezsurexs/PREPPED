@@ -33,11 +33,11 @@ export interface ChatResponse {
   disclaimer: string;
 }
 
-export async function sendChat(messages: ChatTurn[]): Promise<ChatResponse> {
+export async function sendChat(messages: ChatTurn[], lang = "es"): Promise<ChatResponse> {
   const resp = await fetch(`${API_URL}/api/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ messages }),
+    body: JSON.stringify({ messages, lang }),
   });
   if (!resp.ok) {
     const detail = await resp.json().catch(() => ({ detail: resp.statusText }));
