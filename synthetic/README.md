@@ -2,17 +2,16 @@
 
 Todo aquí es **100% sintético** — no hay datos reales de pacientes.
 
-- `rafael.json` — dataset demo generado por `backend/app/data/synthetic.py`
-  (persona **Rafael, 57**: 4 estudios en ~18 meses; glucosa y HbA1c suben a rojo, LDL en ámbar).
+- `test_user.json` — dataset demo generado por `backend/app/data/synthetic.py`
+  (cuenta **test_user**: 4 estudios en ~18 meses; glucosa y HbA1c suben a rojo, LDL en ámbar).
   Se regenera con:
 
   ```bash
   cd backend && uv run python -m app.data.synthetic
   ```
 
-  El frontend NO lee este archivo: usa su propio espejo en `frontend/src/data/seed.ts`
-  (mismos valores) para que AT-1/AT-2 corran sin backend. `rafael.json` sirve para sembrar la
-  DB y como export de referencia.
+  Es un export de referencia del dataset con el que se siembra la cuenta showcase. El historial
+  de la app se sirve desde la base de datos (backend), no desde este archivo.
 
 ## PDF demo para AT-3 (pendiente)
 

@@ -6,11 +6,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 from sqlmodel import Session
 
-from app.api.common import DISCLAIMER, get_default_profile, load_measurements
+from app.api.common import DISCLAIMER, get_current_profile, load_measurements
 from app.assistant.chat import ChatError, run_chat
 from app.assistant.tools import GroundedData
 from app.engine.trends import build_series
 from app.models.db import get_session
+from app.models.domain import Profile
 
 router = APIRouter(prefix="/api", tags=["assistant"])
 
@@ -35,7 +36,11 @@ class ChatResponse(BaseModel):
 
 
 @router.post("/chat", response_model=ChatResponse)
-def chat(payload: ChatRequest, session: Session = Depends(get_session)) -> ChatResponse:
+def chat(
+    payload: ChatRequest,
+    profile: Profile = Depends(get_current_profile),
+    session: Session = Depends(get_session),
+) -> ChatResponse:
     if not payload.messages:
         raise HTTPException(status_code=400, detail="No messages provided.")
     if len(payload.messages) > MAX_MESSAGES:
@@ -46,7 +51,6 @@ def chat(payload: ChatRequest, session: Session = Depends(get_session)) -> ChatR
 
     lang = payload.lang if payload.lang in ALLOWED_LANGS else "es"
 
-    profile = get_default_profile(session)
     measurements = load_measurements(session, profile.id)
     data = GroundedData(build_series(measurements))
 

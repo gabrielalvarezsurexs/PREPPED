@@ -6,10 +6,11 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from sqlmodel import Session
 
-from app.api.common import DISCLAIMER, get_default_profile, load_measurements
+from app.api.common import DISCLAIMER, get_current_profile, load_measurements
 from app.engine.flags import Flag, flagged
 from app.engine.trends import MarkerSeries, build_series
 from app.models.db import get_session
+from app.models.domain import Profile
 
 router = APIRouter(prefix="/api", tags=["history"])
 
@@ -23,8 +24,10 @@ class HistoryResponse(BaseModel):
 
 
 @router.get("/history", response_model=HistoryResponse)
-def get_history(session: Session = Depends(get_session)) -> HistoryResponse:
-    profile = get_default_profile(session)
+def get_history(
+    profile: Profile = Depends(get_current_profile),
+    session: Session = Depends(get_session),
+) -> HistoryResponse:
     measurements = load_measurements(session, profile.id)
     series = build_series(measurements)
     return HistoryResponse(

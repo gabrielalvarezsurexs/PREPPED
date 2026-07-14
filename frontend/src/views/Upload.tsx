@@ -1,11 +1,23 @@
 // Upload (AT-3): drag-and-drop / file picker -> backend extraction -> idempotent add.
 // On a phone browser the native picker offers "take a photo" for free.
+// Below the dropzone, the profile's studies are listed with a delete action.
 
-import { useRef, useState } from "react";
-import { uploadReport, type UploadResult } from "../api/client";
+import { useEffect, useRef, useState } from "react";
+import {
+  deleteReport,
+  listReports,
+  uploadReport,
+  type ReportSummary,
+  type UploadResult,
+} from "../api/client";
 import { useLang } from "../i18n/LanguageContext";
 
-export function Upload() {
+interface Props {
+  /** Called after an upload or delete changes the data, so History can refetch. */
+  onChanged: () => void;
+}
+
+export function Upload({ onChanged }: Props) {
   const { t } = useLang();
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -14,6 +26,21 @@ export function Upload() {
   const [result, setResult] = useState<UploadResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const [reports, setReports] = useState<ReportSummary[]>([]);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+
+  async function loadReports() {
+    try {
+      setReports(await listReports());
+    } catch {
+      // Non-fatal: the list just stays empty if it can't load.
+    }
+  }
+
+  useEffect(() => {
+    void loadReports();
+  }, []);
+
   async function handleFile(file: File) {
     setBusy(true);
     setFileName(file.name);
@@ -21,10 +48,27 @@ export function Upload() {
     setResult(null);
     try {
       setResult(await uploadReport(file));
+      await loadReports();
+      onChanged();
     } catch (e) {
       setError(e instanceof Error ? e.message : t.upload.couldNotUpload);
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function handleDelete(id: number) {
+    if (!window.confirm(t.upload.confirmDelete)) return;
+    setDeletingId(id);
+    setError(null);
+    try {
+      await deleteReport(id);
+      await loadReports();
+      onChanged();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t.upload.deleteError);
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -100,6 +144,32 @@ export function Upload() {
             </ul>
           )}
         </div>
+      )}
+
+      <h2 className="section-title">{t.upload.studiesTitle}</h2>
+      {reports.length === 0 ? (
+        <p className="muted">{t.upload.studiesEmpty}</p>
+      ) : (
+        <ul className="study-list">
+          {reports.map((r) => (
+            <li key={r.id} className="card study-row">
+              <div>
+                <div className="study-date">{r.reportDate}</div>
+                <div className="muted study-meta">
+                  {r.measurementCount} {t.upload.studiesMeasurements} ·{" "}
+                  {r.source === "synthetic" ? t.upload.sourceSynthetic : t.upload.sourceUpload}
+                </div>
+              </div>
+              <button
+                className="btn secondary study-delete"
+                onClick={() => void handleDelete(r.id)}
+                disabled={deletingId === r.id}
+              >
+                {deletingId === r.id ? t.upload.deleting : t.upload.delete}
+              </button>
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );

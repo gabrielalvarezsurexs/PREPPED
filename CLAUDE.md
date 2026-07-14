@@ -53,7 +53,7 @@ Backend (`cd backend`, gestionado con **uv**):
 
 ```bash
 uv sync --extra dev                       # instala deps + dev (pytest, ruff, httpx)
-uv run python -m app.data.synthetic       # siembra SQLite + escribe synthetic/rafael.json
+uv run python -m app.data.synthetic       # siembra SQLite + escribe synthetic/test_user.json
 uv run uvicorn app.main:app --reload      # API en :8000 (docs en /docs)
 uv run pytest                             # toda la suite
 uv run pytest tests/test_at3_idempotent.py                       # un archivo

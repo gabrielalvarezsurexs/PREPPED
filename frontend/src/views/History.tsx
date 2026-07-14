@@ -12,6 +12,7 @@ import type { MarkerSeries } from "../types";
 interface Props {
   series: MarkerSeries[];
   onSelect: (markerId: string) => void;
+  onUploadCta: () => void;
 }
 
 /** Curated range as display text: bounded markers show low–high, one-sided ones ≤/≥. */
@@ -64,10 +65,21 @@ function MarkerCard({
   );
 }
 
-export function History({ series, onSelect }: Props) {
+export function History({ series, onSelect, onUploadCta }: Props) {
   const { lang, t } = useLang();
   const flags = flaggedSeries(series);
   const inRange = series.filter((s) => !s.flagged);
+
+  if (series.length === 0) {
+    return (
+      <div className="empty-state card">
+        <div className="empty-icon" aria-hidden="true">🧪</div>
+        <h2 className="empty-title">{t.history.emptyTitle}</h2>
+        <p className="muted">{t.history.emptyBody}</p>
+        <button className="btn" onClick={onUploadCta}>{t.history.emptyCta}</button>
+      </div>
+    );
+  }
 
   return (
     <div>

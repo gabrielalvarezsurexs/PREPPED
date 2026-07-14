@@ -12,10 +12,11 @@ interface Props {
   series: MarkerSeries;
   reminderSet: boolean;
   onSetReminder: () => void;
+  onInsights: () => void;
   onBack: () => void;
 }
 
-export function MarkerDetail({ series, reminderSet, onSetReminder, onBack }: Props) {
+export function MarkerDetail({ series, reminderSet, onSetReminder, onInsights, onBack }: Props) {
   const { lang, t } = useLang();
   const action = actionFor(series, lang);
 
@@ -37,7 +38,12 @@ export function MarkerDetail({ series, reminderSet, onSetReminder, onBack }: Pro
       </div>
 
       {action ? (
-        <ActionCard action={action} reminderSet={reminderSet} onSetReminder={onSetReminder} />
+        <ActionCard
+          action={action}
+          reminderSet={reminderSet}
+          onSetReminder={onSetReminder}
+          onInsights={onInsights}
+        />
       ) : (
         <p className="muted" style={{ marginTop: 16 }}>
           {t.markerDetail.inRangeNote}

@@ -36,7 +36,9 @@ def persist_report(
     session: Session, profile_id: int, file_hash: str, report: LabReport
 ) -> IngestResult:
     """Persist an extracted report idempotently. Caller commits nothing else."""
-    existing = session.exec(select(Report).where(Report.file_hash == file_hash)).first()
+    existing = session.exec(
+        select(Report).where(Report.profile_id == profile_id, Report.file_hash == file_hash)
+    ).first()
     if existing is not None:
         return IngestResult(
             report_id=existing.id,

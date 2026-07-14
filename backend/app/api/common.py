@@ -1,11 +1,12 @@
-"""Shared route helpers: default profile resolution and measurement loading."""
+"""Shared route helpers: profile resolution and measurement loading."""
 
 from __future__ import annotations
 
-from fastapi import HTTPException
+from fastapi import Depends, Header, HTTPException
 from sqlmodel import Session, select
 
 from app.engine.trends import MeasurementInput
+from app.models.db import get_session
 from app.models.domain import Measurement, Profile
 
 # Shown on every screen; the API echoes it so the frontend can render it verbatim.
@@ -17,13 +18,31 @@ DISCLAIMER = (
 
 
 def get_default_profile(session: Session) -> Profile:
-    """Prototype has a single local profile: return the first one, or 404."""
+    """The first profile ordered by id, or 404. Used by seeding/tests, not routes."""
     profile = session.exec(select(Profile).order_by(Profile.id)).first()
     if profile is None:
         raise HTTPException(
             status_code=404,
             detail="No profile found. Seed the database: `uv run python -m app.data.synthetic`.",
         )
+    return profile
+
+
+def get_current_profile(
+    x_profile_id: int | None = Header(default=None, alias="X-Profile-Id"),
+    session: Session = Depends(get_session),
+) -> Profile:
+    """Resolve the logged-in profile from the ``X-Profile-Id`` header.
+
+    Prototype identity: the frontend stores the profile id at login and sends it
+    back on every request. Spoofable by design for this testing stage; real
+    tokens/sessions are out of scope.
+    """
+    if x_profile_id is None:
+        raise HTTPException(status_code=401, detail="Missing X-Profile-Id header.")
+    profile = session.get(Profile, x_profile_id)
+    if profile is None:
+        raise HTTPException(status_code=401, detail="Unknown profile.")
     return profile
 
 

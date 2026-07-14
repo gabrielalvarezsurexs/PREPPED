@@ -6,10 +6,11 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from pydantic import BaseModel
 from sqlmodel import Session
 
-from app.api.common import get_default_profile
+from app.api.common import get_current_profile
 from app.extraction.client import ExtractionError, extract_lab_report
 from app.ingest import compute_file_hash, persist_report
 from app.models.db import get_session
+from app.models.domain import Profile
 
 router = APIRouter(prefix="/api", tags=["upload"])
 
@@ -27,7 +28,9 @@ class UploadResponse(BaseModel):
 
 @router.post("/upload", response_model=UploadResponse)
 async def upload_report(
-    file: UploadFile = File(...), session: Session = Depends(get_session)
+    file: UploadFile = File(...),
+    profile: Profile = Depends(get_current_profile),
+    session: Session = Depends(get_session),
 ) -> UploadResponse:
     content_type = file.content_type or ""
     if content_type not in _ALLOWED and not (file.filename or "").lower().endswith(
@@ -40,14 +43,16 @@ async def upload_report(
         raise HTTPException(status_code=400, detail="Empty file.")
 
     file_hash = compute_file_hash(file_bytes)
-    profile = get_default_profile(session)
 
-    # Short-circuit a re-upload of the same file WITHOUT calling the model.
+    # Short-circuit a re-upload of the same file (by this profile) WITHOUT calling the model.
     from sqlmodel import select
 
     from app.models.domain import Report
 
-    if session.exec(select(Report).where(Report.file_hash == file_hash)).first():
+    already = session.exec(
+        select(Report).where(Report.profile_id == profile.id, Report.file_hash == file_hash)
+    ).first()
+    if already:
         return UploadResponse(
             report_id=None,
             duplicate_file=True,

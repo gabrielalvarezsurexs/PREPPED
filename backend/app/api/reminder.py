@@ -8,10 +8,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlmodel import Session, select
 
-from app.api.common import get_default_profile
+from app.api.common import get_current_profile
 from app.data.markers_catalog import CATALOG
 from app.models.db import get_session
-from app.models.domain import Reminder, ReminderType
+from app.models.domain import Profile, Reminder, ReminderType
 
 router = APIRouter(prefix="/api", tags=["reminder"])
 
@@ -34,12 +34,12 @@ class ReminderResponse(BaseModel):
 
 @router.post("/reminder", response_model=ReminderResponse)
 def create_reminder(
-    payload: ReminderCreate, session: Session = Depends(get_session)
+    payload: ReminderCreate,
+    profile: Profile = Depends(get_current_profile),
+    session: Session = Depends(get_session),
 ) -> ReminderResponse:
     if payload.marker_id not in CATALOG:
         raise HTTPException(status_code=404, detail=f"Unknown marker: {payload.marker_id}")
-
-    profile = get_default_profile(session)
 
     # Idempotent: one active reminder per (profile, marker, type).
     existing = session.exec(

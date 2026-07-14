@@ -17,13 +17,20 @@ from sqlmodel import Field, SQLModel, UniqueConstraint
 
 
 class Profile(SQLModel, table=True):
-    """A person whose labs are tracked. Prototype: a single local profile."""
+    """A person whose labs are tracked. Each profile is one login account.
+
+    Prototype auth: ``username`` identifies the account and ``password_hash`` is a
+    pbkdf2 digest (see ``app.auth``). The frontend sends the profile id back in an
+    ``X-Profile-Id`` header — spoofable by design for this testing stage.
+    """
 
     __tablename__ = "profiles"
 
     id: int | None = Field(default=None, primary_key=True)
     name: str
     birth_year: int | None = None
+    username: str = Field(default="", index=True, unique=True)
+    password_hash: str = ""
 
 
 class Marker(SQLModel, table=True):
@@ -39,10 +46,13 @@ class Marker(SQLModel, table=True):
 
 
 class Report(SQLModel, table=True):
-    """An uploaded study. ``file_hash`` makes re-uploads idempotent."""
+    """An uploaded study. ``(profile_id, file_hash)`` makes re-uploads idempotent
+    per user, so two accounts can each upload the same file independently."""
 
     __tablename__ = "reports"
-    __table_args__ = (UniqueConstraint("file_hash", name="uq_report_file_hash"),)
+    __table_args__ = (
+        UniqueConstraint("profile_id", "file_hash", name="uq_report_profile_file_hash"),
+    )
 
     id: int | None = Field(default=None, primary_key=True)
     profile_id: int = Field(foreign_key="profiles.id")

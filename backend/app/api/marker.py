@@ -6,12 +6,13 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlmodel import Session
 
-from app.api.common import DISCLAIMER, get_default_profile, load_measurements
+from app.api.common import DISCLAIMER, get_current_profile, load_measurements
 from app.data.markers_catalog import CATALOG
 from app.engine.actions import PreArmedAction, for_marker
 from app.engine.ranges import is_flagged
 from app.engine.trends import MarkerSeries, get_series
 from app.models.db import get_session
+from app.models.domain import Profile
 
 router = APIRouter(prefix="/api", tags=["marker"])
 
@@ -26,12 +27,13 @@ class MarkerResponse(BaseModel):
 
 @router.get("/marker/{marker_id}", response_model=MarkerResponse)
 def get_marker_detail(
-    marker_id: str, session: Session = Depends(get_session)
+    marker_id: str,
+    profile: Profile = Depends(get_current_profile),
+    session: Session = Depends(get_session),
 ) -> MarkerResponse:
     if marker_id not in CATALOG:
         raise HTTPException(status_code=404, detail=f"Unknown marker: {marker_id}")
 
-    profile = get_default_profile(session)
     measurements = load_measurements(session, profile.id)
     series = get_series(measurements, marker_id)
     if series is None:

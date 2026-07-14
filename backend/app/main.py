@@ -12,7 +12,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import chat, history, marker, reminder, upload
+from app.api import auth, chat, history, marker, reminder, report, upload
 from app.api.common import DISCLAIMER
 from app.config import settings
 from app.models.db import init_db
@@ -49,8 +49,10 @@ def health() -> dict:
     }
 
 
+app.include_router(auth.router)
 app.include_router(history.router)
 app.include_router(marker.router)
 app.include_router(reminder.router)
+app.include_router(report.router)
 app.include_router(upload.router)
 app.include_router(chat.router)

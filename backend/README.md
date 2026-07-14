@@ -11,7 +11,7 @@ idempotente). AT-1 y AT-2 corren en el frontend sin este backend.
 
 ```bash
 uv sync                                   # instala deps
-uv run python -m app.data.synthetic       # siembra DB + escribe synthetic/rafael.json
+uv run python -m app.data.synthetic       # siembra DB + escribe synthetic/test_user.json
 uv run uvicorn app.main:app --reload      # http://localhost:8000  (docs en /docs)
 ```
 

@@ -1,11 +1,17 @@
-// Start screen (portada): the wordmark, a tagline, and a single "Start" button that
-// enters the app. Shown on every load. Carries its own language toggle and disclaimer.
+// Start screen (portada): the wordmark, a tagline, and the two entry points —
+// Log in and Sign up. Shown when logged out. Carries its own language toggle and
+// disclaimer.
 
 import { Disclaimer } from "../components/Disclaimer";
 import { LanguageToggle } from "../components/LanguageToggle";
 import { useLang } from "../i18n/LanguageContext";
 
-export function Splash({ onStart }: { onStart: () => void }) {
+interface Props {
+  onLogin: () => void;
+  onRegister: () => void;
+}
+
+export function Splash({ onLogin, onRegister }: Props) {
   const { t } = useLang();
   return (
     <div className="splash">
@@ -35,9 +41,14 @@ export function Splash({ onStart }: { onStart: () => void }) {
           />
         </svg>
         <p className="splash-tagline">{t.tagline}</p>
-        <button className="btn splash-start" onClick={onStart}>
-          {t.splash.start}
-        </button>
+        <div className="splash-actions">
+          <button className="btn splash-start" onClick={onLogin}>
+            {t.splash.login}
+          </button>
+          <button className="btn secondary splash-start" onClick={onRegister}>
+            {t.splash.register}
+          </button>
+        </div>
       </div>
 
       <div className="splash-foot">
